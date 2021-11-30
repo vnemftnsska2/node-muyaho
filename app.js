@@ -14,7 +14,7 @@ app.get('/reading', (req, res) => {
 });
 
 
-app.use(cors({ origin: "http://localhost:3000/" }));
+app.use(cors({ origin: "http://localhost:3000" }));
 app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기 중...');
 });
