@@ -1,6 +1,8 @@
 const express = require('express');
+const mariadb = require('./database/connect/mariadb');
 const cors = require('cors');
 const fs = require('fs');
+require('dotenv').config();
 
 
 const app = express();
@@ -13,7 +15,21 @@ app.get('/api', (req, res) => {
 
 const jsonData = fs.readFileSync('./stock-list.json', 'utf-8');
 app.get('/api/reading', (req, res) => {
-    res.send(jsonData);
+    mariadb.query(`select * from ${process.env.DB_NAME}.leading`, (err, rows, fields) => {
+        if (!err) {
+            console.log(rows);
+            res.send(rows);
+        } else {
+            console.log('query error : ' + err);
+            res.send(err);
+        }
+    });
+    // res.send(jsonData);
+});
+
+app.post('/api/reading', (req, res) => {
+    console.log(req);
+    res.send(JSON.stringify({isOK: true}));
 });
 
 
