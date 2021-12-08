@@ -3,6 +3,7 @@ const mariadb = require('./database/connect/mariadb');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 
@@ -49,9 +50,63 @@ app.get('/api/leading', (req, res) => {
 
 app.post('/api/leading', (req, res) => {
     console.log('ADD LEADING');
-    console.log(req.body);
-    // uploader.single('upload');
-    res.send(JSON.stringify({isOK: true}));
+    const {
+        code,
+        name,
+        type,
+        strategy,
+        first_price,
+        second_price,
+        third_price,
+        goal_price,
+        loss_price,
+        // lead_at,
+        bigo,
+    } = req.body;
+    const lead_at = moment(req.body.lead_at).format('YYYY-MM-DD');
+    console.log('req: ', req.body);
+    try {
+        const query = `INSERT INTO ${process.env.DB_NAME}.leading
+        (
+            code,
+            name,
+            type,
+            strategy,
+            first_price,
+            second_price,
+            third_price,
+            goal_price,
+            loss_price,
+            lead_at,
+            bigo
+        )
+        values
+        (
+            "${code}",
+            "${name}",
+            "${type}",
+            "${strategy}",
+            "${first_price}",
+            "${second_price}",
+            "${third_price}",
+            "${goal_price}",
+            "${loss_price}",
+            "${lead_at}",
+            "${bigo}"
+        )`;
+        mariadb.query(query, (err, rows, fields) => {
+            if (!err) {
+                console.log('INSERT SUCCESS');
+                res.send(JSON.stringify({status: 200}));
+            } else {
+                console.log(err);
+                res.send(JSON.stringify({status: 500}));        
+            }
+        });
+    } catch(e) {
+        console.log(e);
+        res.send(JSON.stringify({status: 500}));
+    }
 });
 
 
