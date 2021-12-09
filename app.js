@@ -36,7 +36,25 @@ app.get('/api', (req, res) => {
 
 const jsonData = fs.readFileSync('./stock-list.json', 'utf-8');
 app.get('/api/leading', (req, res) => {
-    mariadb.query(`select * from ${process.env.DB_NAME}.leading`, (err, rows, fields) => {
+    mariadb.query(`SELECT * FROM ${process.env.DB_NAME}.leading ORDER BY lead_at DESC`, (err, rows, fields) => {
+        if (!err) {
+            console.log(rows);
+            res.send(rows);
+        } else {
+            console.log('query error : ' + err);
+            res.send(err);
+        }
+    });
+    // res.send(jsonData);
+});
+
+app.get('/api/leading/:id', (req, res) => {
+    mariadb.query(`
+        SELECT
+            *
+        FROM ${process.env.DB_NAME}.leading
+        WHERE id = ${req.params.id}
+        LIMIT 1`, (err, rows, fields) => {
         if (!err) {
             console.log(rows);
             res.send(rows);
@@ -60,10 +78,10 @@ app.post('/api/leading', (req, res) => {
         third_price,
         goal_price,
         loss_price,
-        // lead_at,
+        lead_at,
         bigo,
     } = req.body;
-    const lead_at = moment(req.body.lead_at).format('YYYY-MM-DD');
+    // const lead_at = moment(req.body.lead_at).format('YYYY-MM-DD');
     console.log('req: ', req.body);
     try {
         const query = `INSERT INTO ${process.env.DB_NAME}.leading
@@ -91,7 +109,7 @@ app.post('/api/leading', (req, res) => {
             "${third_price}",
             "${goal_price}",
             "${loss_price}",
-            "${lead_at}",
+            "${moment(lead_at).format('YYYY-MM-DD')}",
             "${bigo}"
         )`;
         mariadb.query(query, (err, rows, fields) => {
