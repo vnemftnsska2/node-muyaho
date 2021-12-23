@@ -45,7 +45,6 @@ app.get('/api/leading', (req, res) => {
             res.send(err);
         }
     });
-    // res.send(jsonData);
 });
 
 app.get('/api/leading/:id', (req, res) => {
@@ -53,17 +52,15 @@ app.get('/api/leading/:id', (req, res) => {
         SELECT
             *
         FROM ${process.env.DB_NAME}.leading
-        WHERE id = ${req.params.id}
+        WHERE name = "${req.params.id}"
         LIMIT 1`, (err, rows, fields) => {
         if (!err) {
-            console.log(rows);
             res.send(rows);
         } else {
-            console.log('query error : ' + err);
+            console.log('query error : ', err);
             res.send(err);
         }
     });
-    // res.send(jsonData);
 });
 
 app.post('/api/leading', (req, res) => {
