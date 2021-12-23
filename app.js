@@ -52,7 +52,7 @@ app.get('/api/leading/:id', (req, res) => {
         SELECT
             *
         FROM ${process.env.DB_NAME}.leading
-        WHERE name = "${req.params.id}"
+        WHERE id = ${req.params.id}
         LIMIT 1`, (err, rows, fields) => {
         if (!err) {
             res.send(rows);
@@ -112,6 +112,54 @@ app.post('/api/leading', (req, res) => {
         mariadb.query(query, (err, rows, fields) => {
             if (!err) {
                 console.log('INSERT SUCCESS');
+                res.send(JSON.stringify({status: 200}));
+            } else {
+                console.log(err);
+                res.send(JSON.stringify({status: 500}));        
+            }
+        });
+    } catch(e) {
+        console.log(e);
+        res.send(JSON.stringify({status: 500}));
+    }
+});
+
+app.post('/api/leading/:id', (req, res) => {
+    console.log('UPDATE LEADING');
+    const {
+        code,
+        name,
+        type,
+        strategy,
+        first_price,
+        second_price,
+        third_price,
+        goal_price,
+        loss_price,
+        lead_at,
+        bigo,
+    } = req.body;
+    // const lead_at = moment(req.body.lead_at).format('YYYY-MM-DD');
+    console.log('req: ', req.body);
+    try {
+        const query = `UPDATE ${process.env.DB_NAME}.leading
+        SET 
+            code="${code}",
+            name="${name}",
+            type="${type}",
+            strategy="${strategy}",
+            first_price=${first_price},
+            second_price=${second_price},
+            third_price=${third_price},
+            goal_price="${goal_price}",
+            loss_price=${loss_price},
+            lead_at="${moment(lead_at).format('YYYY-MM-DD')}",
+            bigo="${bigo}",
+            updated_at="${moment().format('YYYY-MM-DD')}"
+        WHERE id=${req.params.id}`;
+        mariadb.query(query, (err, rows, fields) => {
+            if (!err) {
+                console.log('UPDATE SUCCESS');
                 res.send(JSON.stringify({status: 200}));
             } else {
                 console.log(err);
