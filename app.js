@@ -172,6 +172,27 @@ app.post('/api/leading/:id', (req, res) => {
     }
 });
 
+app.post('/api/leading/delete/:id', (req, res) => {
+    const stockId = req.params.id;
+    console.log(`DELETE LEADING:: ${stockId}`);
+    
+    try {
+        const query = `DELETE FROM ${process.env.DB_NAME}.leading
+            WHERE id=${req.params.id}`;
+        mariadb.query(query, (err, rows, fields) => {
+            if (!err) {
+                console.log('DELETE SUCCESS');
+                res.send(JSON.stringify({status: 200}));
+            } else {
+                console.log(err);
+                res.send(JSON.stringify({status: 500}));        
+            }
+        });
+    } catch(e) {
+        console.log(e);
+        res.send(JSON.stringify({status: 500}));
+    }
+});
 
 app.use(cors({ origin: "http://localhost:5000" }));
 app.listen(app.get('port'), () => {
