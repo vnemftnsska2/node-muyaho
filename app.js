@@ -101,11 +101,11 @@ app.post('/api/leading', (req, res) => {
             "${name}",
             "${type}",
             "${strategy}",
-            "${first_price}",
-            "${second_price}",
-            "${third_price}",
-            "${goal_price}",
-            "${loss_price}",
+            "${first_price || 0}",
+            "${second_price || 0}",
+            "${third_price || 0}",
+            "${goal_price || 0}",
+            "${loss_price || 0}",
             "${moment(lead_at).format('YYYY-MM-DD')}",
             "${bigo}"
         )`;
