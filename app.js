@@ -38,7 +38,7 @@ const jsonData = fs.readFileSync('./stock-list.json', 'utf-8');
 app.get('/api/leading', (req, res) => {
     mariadb.query(`SELECT * FROM ${process.env.DB_NAME}.leading ORDER BY lead_at DESC`, (err, rows, fields) => {
         if (!err) {
-            console.log(rows);
+            // console.log(rows);
             res.send(rows);
         } else {
             console.log('query error : ' + err);
@@ -140,7 +140,7 @@ app.post('/api/leading/:id', (req, res) => {
         bigo,
     } = req.body;
     // const lead_at = moment(req.body.lead_at).format('YYYY-MM-DD');
-    console.log('req: ', req.body);
+    // console.log('req: ', req.body);
     try {
         const query = `UPDATE ${process.env.DB_NAME}.leading
         SET 
