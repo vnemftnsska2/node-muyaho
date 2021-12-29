@@ -36,7 +36,7 @@ app.get('/api', (req, res) => {
 
 const jsonData = fs.readFileSync('./stock-list.json', 'utf-8');
 app.get('/api/leading', (req, res) => {
-    mariadb.query(`SELECT * FROM ${process.env.DB_NAME}.leading ORDER BY lead_at DESC`, (err, rows, fields) => {
+    mariadb.query(`SELECT * FROM ${process.env.DB_NAME}.leading ORDER BY lead_at DESC, id DESC`, (err, rows, fields) => {
         if (!err) {
             // console.log(rows);
             res.send(rows);
