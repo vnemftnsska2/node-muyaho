@@ -6,6 +6,8 @@ const multer = require('multer');
 const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 
 // env
 require('dotenv').config();
@@ -28,10 +30,22 @@ const app = express();
 app.set('port', process.env.PORT || 3030);
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // init test
 app.get('/api', (req, res) => {
     res.send('Hello Express');
+});
+
+// Login
+app.post('/api/login', (req, res) => {
+    console.log(req)
+    // 이메일 & 비밀번호 체크
+
+    // 토큰 생성
+    const token = jwt.sign({ userid: 'admin' }, 'muyaho');
+    res.cookie('jwt_auth', token);
+    res.send(JSON.stringify({status: 200}))
 });
 
 const jsonData = fs.readFileSync('./stock-list.json', 'utf-8');
